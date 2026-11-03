@@ -1,0 +1,10 @@
+{
+  "name": "ubermayinch",
+  "private": true,
+  "type": "module",
+  "scripts": {
+    "build": "node build.mjs",
+    "serve": "python3 -m http.server -d dist 8000"
+  },
+  "engines": { "node": ">=20" }
+}

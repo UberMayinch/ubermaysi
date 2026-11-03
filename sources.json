@@ -1,0 +1,66 @@
+{
+  "site": {
+    "title": "ubermayinch",
+    "author": "Chinmay Sharma",
+    "url": "https://ubermayinch.si",
+    "tagline": "poems, essays, criticism, math, and videos — all in one place."
+  },
+  "sources": [
+    {
+      "id": "midnight-hysteria",
+      "label": "Midnight Hysteria",
+      "about": "Assemblages and Intensities",
+      "site": "https://midnighthysteria.wordpress.com/",
+      "feed": "https://midnighthysteria.wordpress.com/feed/"
+    },
+    {
+      "id": "too-many-cents",
+      "label": "My Too (Many) Cents",
+      "about": "media criticism",
+      "site": "https://toomanycents.blogspot.com/",
+      "feed": "https://toomanycents.blogspot.com/feeds/posts/default?alt=rss&max-results=50"
+    },
+    {
+      "id": "emergence-premium",
+      "label": "Emergence Premium",
+      "about": "newsletter",
+      "site": "https://toomanycents.substack.com/",
+      "feed": "https://toomanycents.substack.com/feed"
+    },
+    {
+      "id": "truth-in-the-wild",
+      "label": "Truth in the Wild.",
+      "about": "Mastering Mastery",
+      "site": "https://pathlessgeodesic.substack.com/",
+      "feed": "https://pathlessgeodesic.substack.com/feed"
+    },
+    {
+      "id": "rhizomorphic",
+      "label": "rhizoMorphic",
+      "about": "technical blog",
+      "site": "https://ubermayinch.github.io/blog/",
+      "feed": "https://ubermayinch.github.io/blog/posts/index.xml"
+    },
+    {
+      "id": "youtube",
+      "label": "YouTube",
+      "about": "videos",
+      "site": "https://www.youtube.com/@ubermayinch",
+      "feed": "https://www.youtube.com/feeds/videos.xml?channel_id=UCXIvvINy2RJegRcCjDqnJtg"
+    }
+  ],
+  "elsewhere": [
+    {
+      "label": "GitHub",
+      "url": "https://github.com/UberMayinch"
+    },
+    {
+      "label": "Twitter",
+      "url": "https://twitter.com/Uber_Mayinch"
+    },
+    {
+      "label": "Instagram",
+      "url": "https://instagram.com/chihn.moi"
+    }
+  ]
+}
