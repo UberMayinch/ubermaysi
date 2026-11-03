@@ -4,6 +4,7 @@
   "type": "module",
   "scripts": {
     "build": "node build.mjs",
+    "refresh": "git pull --rebase -q && node build.mjs && git add data/archive.json && (git diff --cached --quiet || git commit -m 'refresh feed archive') && git push",
     "serve": "python3 -m http.server -d dist 8000"
   },
   "engines": { "node": ">=20" }

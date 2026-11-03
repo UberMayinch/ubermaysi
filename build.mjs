@@ -10,7 +10,11 @@ const config = JSON.parse(await readFile("sources.json", "utf8"));
 const { site, sources, elsewhere } = config;
 // Where this build is served. CI sets PUBLIC_URL from GitHub Pages (e.g. https://user.github.io/repo while
 // the custom domain is not live); defaults to site.url. BASE prefixes every internal link.
-const SITE_URL = (process.env.PUBLIC_URL || site.url).replace(/\/+$/, "");
+const SITE_URL = (() => {
+  const pub = (process.env.PUBLIC_URL || site.url).replace(/\/+$/, "");
+  // Pages reports http:// until HTTPS is enforced; on our own domain always use the canonical https URL.
+  return new URL(pub).host === new URL(site.url).host ? site.url.replace(/\/+$/, "") : pub;
+})();
 const BASE = new URL(SITE_URL).pathname.replace(/\/+$/, "");
 
 // ---------- XML parsing (RSS 2.0 + Atom, regex-level: enough for well-formed feeds) ----------
@@ -80,15 +84,23 @@ function parseFeed(xml) {
 
 // ---------- fetching, with last-good fallback ----------
 
+const ARCHIVE = "data/archive.json";
+
+// Everything seen before: the committed archive (CI commits it back after each build; a local build
+// refreshes sources that block CI, e.g. Substack) plus the live/local feed.json. Keeps old posts and
+// flaky sources from vanishing.
 async function previousItems() {
-  // Prefer local last build, else whatever is live. Keeps a flaky source from vanishing.
-  try {
-    if (existsSync(`${OUT}/feed.json`)) return JSON.parse(await readFile(`${OUT}/feed.json`, "utf8")).items ?? [];
-    const res = await fetch(`${SITE_URL}/feed.json`, { signal: AbortSignal.timeout(10000) });
-    return res.ok ? (await res.json()).items ?? [] : [];
-  } catch {
-    return [];
-  }
+  const read = async (path) => (existsSync(path) ? JSON.parse(await readFile(path, "utf8")) : []);
+  const live = async () => {
+    try {
+      if (existsSync(`${OUT}/feed.json`)) return (await read(`${OUT}/feed.json`)).items ?? [];
+      const res = await fetch(`${SITE_URL}/feed.json`, { signal: AbortSignal.timeout(10000) });
+      return res.ok ? (await res.json()).items ?? [] : [];
+    } catch {
+      return [];
+    }
+  };
+  return [...(await read(ARCHIVE)), ...(await live())];
 }
 
 // Feeds only expose their latest N items; keep everything ever seen so the archive grows, never shrinks.
@@ -279,6 +291,7 @@ const notFound = layout({
 });
 
 await mkdir(`${OUT}/feed`, { recursive: true });
+await mkdir("data", { recursive: true });
 await Promise.all([
   writeFile(`${OUT}/index.html`, home),
   writeFile(`${OUT}/feed/index.html`, feedPage),
@@ -286,5 +299,6 @@ await Promise.all([
   writeFile(`${OUT}/feed.json`, JSON.stringify(jsonFeed, null, 2)),
   copyFile("static/style.css", `${OUT}/style.css`),
   writeFile(`${OUT}/404.html`, notFound),
+  writeFile(ARCHIVE, JSON.stringify(jsonFeed.items, null, 1) + "\n"),
 ]);
 console.log(`built ${feed.length} items → ${OUT}/`);
