@@ -1,5 +1,19 @@
 [
  {
+  "id": "https://www.youtube.com/watch?v=9loeouHm5rQ",
+  "url": "https://www.youtube.com/watch?v=9loeouHm5rQ",
+  "title": "Fred Again... - Victory Lap Five (Improvisation)",
+  "summary": "decided to bang this out at the end of a practice session. Insanely fun song for which I'd love to write some parts and record an actual cover",
+  "date_published": "2026-11-12T20:43:37.000Z",
+  "tags": [
+   "YouTube"
+  ],
+  "_source": {
+   "id": "youtube",
+   "label": "YouTube"
+  }
+ },
+ {
   "id": "https://pathlessgeodesic.substack.com/p/fi-11",
   "url": "https://pathlessgeodesic.substack.com/p/fi-11",
   "title": "fi (11)",
