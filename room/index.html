@@ -1,0 +1,240 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>room — ubermayinch</title>
+<meta name="description" content="A room you can look around: drums, books, a journal, a punching bag. Each corner opens a part of the site.">
+<meta name="theme-color" content="#fbfaf7" media="(prefers-color-scheme: light)">
+<meta name="theme-color" content="#141312" media="(prefers-color-scheme: dark)">
+<link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 32 32'%3E%3Ccircle cx='16' cy='16' r='10.5' fill='none' stroke='%238a3b1e' stroke-width='3.4' stroke-linecap='round' stroke-dasharray='58 8'/%3E%3C/svg%3E">
+<link rel="alternate" type="application/atom+xml" title="ubermayinch — everything" href="../feed.xml">
+<style>
+:root {
+  --bg: #fbfaf7; --fg: #1d1c1a; --muted: #6f6b64; --rule: #e6e2da; --accent: #8a3b1e; --chip: #f0ece4;
+  --veil: rgba(251, 250, 247, .82); --sheet: rgba(251, 250, 247, .95); --shadow: rgba(40, 28, 16, .22);
+  --mono: ui-monospace, Menlo, monospace;
+  --serif: "Iowan Old Style", "Palatino Linotype", Palatino, Georgia, serif;
+  --ease: cubic-bezier(.22, .61, .36, 1);
+  color-scheme: light dark;
+}
+@media (prefers-color-scheme: dark) {
+  :root {
+    --bg: #141312; --fg: #e9e6e0; --muted: #9a958c; --rule: #2a2826; --accent: #e08a5f; --chip: #221f1d;
+    --veil: rgba(20, 19, 18, .78); --sheet: rgba(22, 21, 19, .94); --shadow: rgba(0, 0, 0, .5);
+  }
+}
+* { box-sizing: border-box; }
+html, body { height: 100%; }
+html { background: var(--bg); color: var(--fg); }
+body { margin: 0; overflow: hidden; font: 12.5px/1.5 var(--mono); overscroll-behavior: none; -webkit-text-size-adjust: 100%; }
+a { color: var(--fg); text-decoration-color: var(--accent); text-underline-offset: 3px; }
+a:hover { color: var(--accent); }
+button { font: inherit; color: inherit; }
+:focus-visible { outline: 2px solid var(--accent); outline-offset: 2px; }
+[hidden] { display: none !important; }
+
+#scene { position: fixed; inset: 0; width: 100%; height: 100%; display: block; touch-action: none; outline: none; cursor: grab; -webkit-tap-highlight-color: transparent; }
+#scene.dragging { cursor: grabbing; }
+
+/* ---- HUD: top-left, lets the pointer through wherever there is no control ---- */
+#hud { position: fixed; z-index: 3; top: max(.75rem, env(safe-area-inset-top)); left: max(.75rem, env(safe-area-inset-left)); max-width: min(40rem, calc(100vw - 1.5rem)); pointer-events: none; user-select: none; -webkit-user-select: none; }
+#hud > * { pointer-events: auto; }
+.bar { display: inline-flex; align-items: center; gap: .5rem; padding: .3rem .4rem .3rem .7rem; background: var(--veil); border: 1px solid var(--rule); border-radius: 999px; -webkit-backdrop-filter: blur(10px); backdrop-filter: blur(10px); }
+.bar .home { font-weight: 600; text-decoration: none; }
+.bar .slash { color: var(--muted); }
+.bar h1 { margin: 0; font: inherit; color: var(--muted); }
+.icon { display: inline-grid; place-items: center; width: 1.7rem; height: 1.7rem; padding: 0; border: 0; border-radius: 50%; background: transparent; color: var(--muted); cursor: pointer; transition: color .2s, background-color .2s; }
+.icon:hover { color: var(--accent); background: var(--chip); }
+.icon svg { width: 15px; height: 15px; fill: none; stroke: currentColor; stroke-width: 1.5; stroke-linecap: round; stroke-linejoin: round; }
+#mute[aria-pressed="true"] .wave { display: none; }
+#mute[aria-pressed="false"] .cross { display: none; }
+body[data-mode="walk"] #mode .to-walk, body:not([data-mode="walk"]) #mode .to-overview { display: none; }
+#menu { display: none; }
+#more { margin-top: .5rem; width: max-content; max-width: 100%; padding: .5rem .6rem .45rem; display: grid; gap: .4rem; background: var(--veil); border: 1px solid var(--rule); border-radius: 12px; -webkit-backdrop-filter: blur(10px); backdrop-filter: blur(10px); transition: opacity .25s var(--ease), transform .25s var(--ease); }
+.row { display: flex; flex-wrap: wrap; align-items: center; gap: .3rem; margin: 0; }
+.row .lbl { width: 3.4rem; color: var(--muted); font-size: .68rem; letter-spacing: .12em; text-transform: uppercase; }
+.chip { padding: .22rem .6rem; background: transparent; border: 1px solid var(--rule); border-radius: 999px; cursor: pointer; transition: color .2s, border-color .2s, background-color .2s; }
+.chip:hover { color: var(--accent); border-color: var(--accent); }
+.chip[aria-pressed="true"] { background: var(--fg); color: var(--bg); border-color: var(--fg); }
+.chip.num { min-width: 1.75rem; padding-inline: 0; text-align: center; }
+.hint { margin: .1rem 0 0; color: var(--muted); font-size: .72rem; }
+
+/* ---- hover label ---- */
+#tip { position: fixed; z-index: 4; left: 0; top: 0; max-width: min(22rem, 70vw); padding: .2rem .55rem; background: var(--fg); color: var(--bg); border-radius: 4px; font-size: .72rem; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; pointer-events: none; opacity: 0; transition: opacity .16s; will-change: transform; }
+#tip.on { opacity: .94; }
+
+/* ---- walk mode: reticle + interact prompt ---- */
+#reticle { position: fixed; z-index: 2; left: 50%; top: 50%; width: 6px; height: 6px; margin: -3px 0 0 -3px; border-radius: 50%; background: rgba(255, 252, 246, .92); box-shadow: 0 0 0 1.5px rgba(20, 19, 18, .42); pointer-events: none; transition: transform .16s var(--ease), background-color .16s, opacity .2s; }
+#reticle.on { transform: scale(1.45); background: #e08a5f; }
+#reticle.off { opacity: 0; }
+#prompt { position: fixed; z-index: 3; left: 50%; bottom: max(1.6rem, env(safe-area-inset-bottom)); display: flex; align-items: center; gap: .55rem; max-width: min(28rem, calc(100vw - 2rem)); padding: .3rem .85rem .3rem .32rem; background: var(--veil); border: 1px solid var(--rule); border-radius: 999px; -webkit-backdrop-filter: blur(10px); backdrop-filter: blur(10px); white-space: nowrap; pointer-events: none; opacity: 0; transform: translate(-50%, .35rem); transition: opacity .18s var(--ease), transform .18s var(--ease); }
+#prompt.on { opacity: 1; transform: translate(-50%, 0); }
+#prompt kbd { display: inline-grid; place-items: center; min-width: 1.45rem; height: 1.45rem; padding: 0 .3rem; border-radius: 999px; background: var(--fg); color: var(--bg); font: 600 .72rem var(--mono); }
+#prompt span { overflow: hidden; text-overflow: ellipsis; }
+
+/* ---- transient line: time of day (T), "X back" at a vantage ---- */
+#toast { position: fixed; z-index: 3; left: 50%; top: max(.9rem, env(safe-area-inset-top)); padding: .22rem .75rem; background: var(--veil); border: 1px solid var(--rule); border-radius: 999px; -webkit-backdrop-filter: blur(10px); backdrop-filter: blur(10px); font: 600 .78rem var(--mono); letter-spacing: .06em; white-space: nowrap; pointer-events: none; opacity: 0; transform: translate(-50%, -.3rem); transition: opacity .2s var(--ease), transform .2s var(--ease); }
+#toast.on { opacity: 1; transform: translate(-50%, 0); }
+@media (max-width: 600px) { #toast { top: auto; bottom: max(4.2rem, env(safe-area-inset-bottom)); } }
+
+/* ---- side panel (bottom sheet on phones) ---- */
+#panel { position: fixed; z-index: 5; top: 0; right: 0; bottom: 0; width: min(25rem, 100vw); display: flex; flex-direction: column; background: var(--sheet); border-left: 1px solid var(--rule); box-shadow: -28px 0 70px -34px var(--shadow); -webkit-backdrop-filter: blur(14px); backdrop-filter: blur(14px); font: 16px/1.55 var(--serif); visibility: hidden; transform: translateX(104%); transition: transform .46s var(--ease), visibility 0s linear .46s; }
+#panel.open { visibility: visible; transform: none; transition: transform .46s var(--ease), visibility 0s; }
+.panel-head { position: relative; padding: 1.5rem 3.4rem .9rem 1.5rem; padding-top: max(1.5rem, env(safe-area-inset-top)); }
+.panel-head::before { content: ""; display: block; width: 1.6rem; height: 2px; margin-bottom: .9rem; background: var(--accent); }
+#panel-kicker { margin: 0 0 .15rem; font: .68rem var(--mono); letter-spacing: .12em; text-transform: uppercase; color: var(--muted); }
+#panel-title { margin: 0; font-size: 1.6rem; font-weight: 500; letter-spacing: -.01em; line-height: 1.2; }
+#panel-blurb { margin: .35rem 0 0; color: var(--muted); font-size: .95rem; }
+#panel-close { position: absolute; top: 1.1rem; right: 1rem; top: max(1.1rem, env(safe-area-inset-top)); width: 2.1rem; height: 2.1rem; }
+#panel-keys { margin: .5rem 0 0; font: .68rem var(--mono); color: var(--muted); }
+#panel-keys kbd { font: inherit; color: var(--fg); }
+#panel-primary { display: block; margin: 0 1.5rem 1rem; padding: .65rem .9rem .6rem; background: var(--chip); border: 1px solid var(--rule); border-radius: 10px; text-decoration: none; font: .8rem/1.4 var(--mono); transition: border-color .2s, box-shadow .2s; }
+#panel-primary .go { display: block; font-size: .95rem; font-weight: 600; color: var(--fg); }
+#panel-primary .host { display: block; color: var(--muted); font-size: .7rem; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+#panel-primary:hover .go { color: var(--accent); }
+#panel-primary.sel { border-color: var(--accent); box-shadow: inset 3px 0 0 var(--accent); }
+#panel-links li.sel a { color: var(--accent); text-decoration-thickness: 2px; }
+#panel-links li.sel a::before { content: "▸ "; }
+#panel-links { display: flex; flex-wrap: wrap; gap: .25rem 1.1rem; margin: 0; padding: 0 1.5rem 1rem; list-style: none; font: .78rem var(--mono); }
+#panel-links a { color: var(--muted); }
+#panel-links a:hover { color: var(--accent); }
+#panel-links a[target]::after { content: " ↗"; text-decoration: none; display: inline-block; }
+.panel-body { flex: 1; min-height: 0; overflow-y: auto; overscroll-behavior: contain; padding: 0 1.5rem max(2rem, env(safe-area-inset-bottom)); scrollbar-width: thin; scrollbar-color: var(--rule) transparent; }
+#panel-items { margin: 0; padding: 0; list-style: none; }
+#panel-items li { margin: 0 -.7rem; padding: .85rem .7rem; border-top: 1px solid var(--rule); cursor: pointer; transition: background-color .15s; }
+#panel-items li:hover, #panel-items li.sel { background: var(--chip); }
+#panel-items li.sel { box-shadow: inset 3px 0 0 var(--accent); }
+#panel-items .meta { display: flex; gap: .6rem; font: .7rem var(--mono); color: var(--muted); }
+#panel-items .title { display: inline-block; margin-top: .1rem; font-weight: 500; }
+#panel-items p { margin: .2rem 0 0; color: var(--muted); font-size: .88rem; line-height: 1.5; overflow-wrap: anywhere; display: -webkit-box; -webkit-box-orient: vertical; -webkit-line-clamp: 3; line-clamp: 3; overflow: hidden; }
+#panel-note { margin: 0; padding: .85rem 0; border-top: 1px solid var(--rule); color: var(--muted); font-size: .9rem; }
+
+/* ---- loading + fallback ---- */
+#loading { position: fixed; z-index: 6; inset: 0; display: grid; place-content: center; justify-items: center; gap: .9rem; background: var(--bg); color: var(--muted); font-size: .72rem; letter-spacing: .16em; text-transform: uppercase; transition: opacity .9s var(--ease), visibility 0s linear .9s; }
+#loading.done { opacity: 0; visibility: hidden; pointer-events: none; }
+#loading i { width: 30px; height: 30px; border: 1.5px solid var(--muted); border-right-color: transparent; border-radius: 50%; opacity: .7; animation: turn 1.8s linear infinite; }
+@keyframes turn { to { transform: rotate(360deg); } }
+.fallback { position: fixed; z-index: 2; inset: 0; display: grid; place-content: center; padding: 6rem 1.5rem 2rem; text-align: center; font: 17px/1.6 var(--serif); }
+.fallback p { max-width: 26rem; margin: 0 auto .6rem; }
+.fallback .quiet { color: var(--muted); font-size: .92rem; }
+
+@media (max-width: 600px) {
+  #menu { display: inline-grid; }
+  #menu[aria-expanded="true"] { color: var(--accent); background: var(--chip); }
+  #more { padding: .6rem .7rem; background: var(--sheet); border: 1px solid var(--rule); border-radius: 12px; -webkit-backdrop-filter: blur(14px); backdrop-filter: blur(14px); box-shadow: 0 18px 40px -22px var(--shadow); }
+  #more:not(.open) { display: none; }
+  .row .lbl { width: 100%; text-shadow: none; }
+  .hint { text-shadow: none; }
+  .chip { -webkit-backdrop-filter: none; backdrop-filter: none; background: transparent; padding: .32rem .7rem; }
+  .chip.num { min-width: 2.1rem; }
+  #panel { top: auto; left: 0; width: auto; max-height: 64vh; max-height: 64dvh; border-left: 0; border-top: 1px solid var(--rule); border-radius: 16px 16px 0 0; box-shadow: 0 -24px 60px -30px var(--shadow); transform: translateY(104%); }
+  .panel-head { padding: 1.1rem 3.2rem .7rem 1.2rem; }
+  .panel-head::before { margin-bottom: .7rem; }
+  #panel-title { font-size: 1.35rem; }
+  #panel-close { top: .8rem; right: .7rem; }
+  #panel-links { padding: 0 1.2rem .8rem; }
+  #panel-primary { margin: 0 1.2rem .8rem; }
+  .panel-body { padding-inline: 1.2rem; }
+}
+@media (hover: none) and (pointer: coarse) {
+  #mode { display: none; }
+}
+@media (prefers-reduced-motion: reduce) {
+  *, *::before, *::after { transition-duration: .01ms !important; transition-delay: 0s !important; animation: none !important; }
+}
+</style>
+<script type="importmap">
+{
+  "imports": {
+    "three": "https://cdn.jsdelivr.net/npm/three@0.186.1/build/three.module.js",
+    "three/addons/": "https://cdn.jsdelivr.net/npm/three@0.186.1/examples/jsm/"
+  }
+}
+</script>
+</head>
+<body>
+<canvas id="scene" tabindex="0" aria-label="A 3D room: drum kit, bookshelf, standing desk with a laptop and a journal, training corner with a punching bag, a glass music booth, a picture projected on a curtain with a sleeping nook behind it, and a door out to a small garden. Use the places buttons to open each part."></canvas>
+
+<header id="hud">
+  <div class="bar">
+    <a class="home" href="../">ubermayinch</a><span class="slash" aria-hidden="true">/</span><h1>room</h1>
+    <button id="mute" class="icon" type="button" aria-pressed="false" aria-label="mute sound" title="sound (M)">
+      <svg viewBox="0 0 16 16" aria-hidden="true"><path d="M2.5 6.2h2.2L8 3.4v9.2L4.7 9.8H2.5z"/><path class="wave" d="M10.4 5.9a3 3 0 0 1 0 4.2M12.2 4.2a5.4 5.4 0 0 1 0 7.6"/><path class="cross" d="M10.6 6.3l3 3.4M13.6 6.3l-3 3.4"/></svg>
+    </button>
+    <button id="mode" class="icon" type="button" aria-label="switch to overview (V)" title="overview (V)">
+      <svg viewBox="0 0 16 16" aria-hidden="true"><path class="to-overview" d="M8 2.2l5.6 3.1v5.4L8 13.8l-5.6-3.1V5.3zM2.4 5.3L8 8.4l5.6-3.1M8 8.4v5.4"/><path class="to-walk" d="M8.6 2.4a1.1 1.1 0 1 1 0 .01M7.6 5.2l-1.9 1.6.2 2.2M7.6 5.2l1.4 2.4 1.9.9M7.6 5.2l-.6 4.1 2 1.6.6 2.8M7 9.3l-1.6 4.4"/></svg>
+    </button>
+    <button id="menu" class="icon" type="button" aria-expanded="false" aria-controls="more" aria-label="views and places" title="views and places">
+      <svg viewBox="0 0 16 16" aria-hidden="true"><path d="M3 5h10M3 8h10M3 11h10"/></svg>
+    </button>
+  </div>
+  <div id="more">
+    <nav class="row" id="views" aria-label="views">
+      <span class="lbl">views</span>
+      <button class="chip num" type="button" data-view="0" aria-pressed="false" aria-label="view 0: screen" title="screen">0</button>
+      <button class="chip num" type="button" data-view="1" aria-pressed="false" aria-label="view 1: overview" title="overview">1</button>
+      <button class="chip num" type="button" data-view="2" aria-pressed="false" aria-label="view 2: training" title="training">2</button>
+      <button class="chip num" type="button" data-view="3" aria-pressed="false" aria-label="view 3: music" title="music">3</button>
+      <button class="chip num" type="button" data-view="4" aria-pressed="false" aria-label="view 4: desk" title="desk">4</button>
+      <button class="chip num" type="button" data-view="5" aria-pressed="false" aria-label="view 5: library" title="library">5</button>
+      <button class="chip num" type="button" data-view="6" aria-pressed="false" aria-label="view 6: garden" title="garden">6</button>
+    </nav>
+    <nav class="row" id="zones" aria-label="places">
+      <span class="lbl">places</span>
+      <button class="chip" type="button" data-zone="music" aria-pressed="false">music</button>
+      <button class="chip" type="button" data-zone="library" aria-pressed="false">library</button>
+      <button class="chip" type="button" data-zone="journal" aria-pressed="false">journal</button>
+      <button class="chip" type="button" data-zone="laptop" aria-pressed="false">laptop</button>
+      <button class="chip" type="button" data-zone="training" aria-pressed="false">training</button>
+      <button class="chip" type="button" data-zone="screen" aria-pressed="false">screen</button>
+      <button class="chip" type="button" data-zone="door" aria-pressed="false">elsewhere</button>
+      <button class="chip" type="button" data-place="garden">garden</button>
+      <button class="chip" type="button" data-place="bed" hidden>bed</button>
+    </nav>
+    <p class="hint" id="hint">drag to look · click the bag · 1–6 views</p>
+  </div>
+</header>
+
+<div id="tip" role="tooltip" aria-hidden="true"></div>
+<div id="toast" role="status" aria-live="polite"></div>
+<div id="reticle" aria-hidden="true" hidden></div>
+<div id="prompt" aria-hidden="true" hidden><kbd>Z</kbd><span id="prompt-label"></span></div>
+
+<aside id="panel" role="dialog" aria-modal="false" aria-labelledby="panel-title" aria-hidden="true" inert>
+  <header class="panel-head">
+    <p id="panel-kicker"></p>
+    <h2 id="panel-title"></h2>
+    <p id="panel-blurb"></p>
+    <p id="panel-keys" hidden><kbd>↑↓</kbd> select · <kbd>Z</kbd> open · <kbd>X</kbd> back</p>
+    <button id="panel-close" class="icon" type="button" aria-label="close panel" title="close (X / Esc)">
+      <svg viewBox="0 0 16 16" aria-hidden="true"><path d="M4 4l8 8M12 4l-8 8"/></svg>
+    </button>
+  </header>
+  <a id="panel-primary" hidden></a>
+  <ul id="panel-links"></ul>
+  <div class="panel-body" tabindex="-1">
+    <ol id="panel-items"></ol>
+    <p id="panel-note" hidden></p>
+  </div>
+</aside>
+
+<div id="loading" role="status"><i aria-hidden="true"></i><span>room</span></div>
+
+<div id="fallback" class="fallback" hidden>
+  <p>The room needs WebGL, and it is not available here.</p>
+  <p class="quiet">Nothing is lost: the places above still open, and everything is on the <a href="../">homepage</a> and in the <a href="../feed/">feed</a>.</p>
+</div>
+
+<noscript>
+  <style>#loading, #more, #mute, #menu { display: none !important; }</style>
+  <div class="fallback">
+    <p>The room is drawn with JavaScript, which is switched off.</p>
+    <p class="quiet">Everything in it is on the <a href="../">homepage</a> and in the <a href="../feed/">feed</a>.</p>
+  </div>
+</noscript>
+
+<script type="module" src="./main.js"></script>
+<script nomodule>document.getElementById("loading").className = "done"; document.getElementById("fallback").hidden = false;</script>
+</body>
+</html>

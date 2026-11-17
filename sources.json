@@ -62,5 +62,59 @@
       "label": "Instagram",
       "url": "https://instagram.com/chihn.moi"
     }
-  ]
+  ],
+  "room": {
+    "zones": [
+      {
+        "id": "music",
+        "title": "Music",
+        "blurb": "Videos from the YouTube channel.",
+        "sources": ["youtube"]
+      },
+      {
+        "id": "library",
+        "title": "Library",
+        "blurb": "Essays, media criticism and the newsletter. One spine, one post.",
+        "sources": ["too-many-cents", "emergence-premium"]
+      },
+      {
+        "id": "journal",
+        "title": "Journal",
+        "blurb": "Poems — assemblages and intensities.",
+        "sources": ["midnight-hysteria"]
+      },
+      {
+        "id": "laptop",
+        "title": "Laptop",
+        "blurb": "The technical blog, and the code behind it.",
+        "sources": ["rhizomorphic"],
+        "elsewhere": ["GitHub"]
+      },
+      {
+        "id": "training",
+        "title": "Truth in the Wild.",
+        "blurb": "Mastering Mastery.",
+        "sources": ["truth-in-the-wild"]
+      },
+      {
+        "id": "screen",
+        "title": "Latest",
+        "blurb": "The newest things from everywhere, in one place.",
+        "latest": 12,
+        "links": [
+          { "label": "full feed", "url": "../feed/" },
+          { "label": "rss", "url": "../feed.xml" }
+        ]
+      },
+      {
+        "id": "door",
+        "title": "Elsewhere",
+        "blurb": "Other places to find me, and the way back out.",
+        "elsewhere": ["Twitter", "Instagram", "GitHub"],
+        "links": [
+          { "label": "plain text homepage", "url": "../" }
+        ]
+      }
+    ]
+  }
 }

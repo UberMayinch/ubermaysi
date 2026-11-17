@@ -1,13 +1,13 @@
 #!/usr/bin/env node
-// Builds the static site into dist/: homepage, /feed/, /feed.xml (Atom), /feed.json (JSON Feed).
+// Builds the static site into dist/: homepage, /feed/, /feed.xml (Atom), /feed.json (JSON Feed), /room/ (3D front door).
 // Zero dependencies. Fetches every source's feed at build time (browsers can't: no CORS on these hosts).
 
-import { readFile, writeFile, mkdir, copyFile } from "node:fs/promises";
+import { readFile, writeFile, mkdir, copyFile, cp } from "node:fs/promises";
 import { existsSync } from "node:fs";
 
 const OUT = "dist";
 const config = JSON.parse(await readFile("sources.json", "utf8"));
-const { site, sources, elsewhere } = config;
+const { site, sources, elsewhere, room } = config;
 // Where this build is served. CI sets PUBLIC_URL from GitHub Pages (e.g. https://user.github.io/repo while
 // the custom domain is not live); defaults to site.url. BASE prefixes every internal link.
 const SITE_URL = (() => {
@@ -156,7 +156,7 @@ const layout = ({ title, body, path }) => `<!doctype html>
 <link rel="stylesheet" href="${BASE}/style.css">
 </head>
 <body>
-<header class="top"><a href="${BASE}/" class="home">${esc(site.title)}</a><nav><a href="${BASE}/feed/">feed</a><a href="${BASE}/feed.xml">rss</a></nav></header>
+<header class="top"><a href="${BASE}/" class="home">${esc(site.title)}</a><nav><a href="${BASE}/room/">room</a><a href="${BASE}/feed/">feed</a><a href="${BASE}/feed.xml">rss</a></nav></header>
 <main>
 ${body}
 </main>
@@ -183,6 +183,7 @@ const home = layout({
   body: `<section class="intro">
   <h1>${esc(site.author)}</h1>
   <p>${esc(site.tagline)}</p>
+  <p style="margin-top:.75rem"><a href="${BASE}/room/">enter the room →</a> the same things, in a place you can look around.</p>
 </section>
 
 <section>
@@ -290,7 +291,33 @@ const notFound = layout({
   body: `<section class="intro"><h1>404</h1><p>Nothing here. Try the <a href="${BASE}/">homepage</a> or the <a href="${BASE}/feed/">feed</a>.</p></section>`,
 });
 
+// ---------- room: the 3D front door (room/ is copied as-is; its content comes from content.json) ----------
+
+// Zones are defined in sources.json ("room.zones"): each one names the sources whose posts it lists and
+// the links it offers. URLs here are either absolute or relative to /room/, so the page works under any BASE.
+const roomItem = (it) => ({ title: it.title, url: it.url, date: it.date.toISOString(), summary: it.summary, source: it.source, sourceLabel: byId[it.source].label });
+const roomContent = {
+  site: { title: site.title, author: site.author, tagline: site.tagline },
+  zones: Object.fromEntries(
+    (room?.zones ?? []).map((z) => [
+      z.id,
+      {
+        title: z.title,
+        blurb: z.blurb ?? "",
+        links: [
+          ...(z.sources ?? []).filter((id) => byId[id]).map((id) => ({ label: byId[id].label, url: byId[id].site })),
+          ...(z.elsewhere ?? []).flatMap((label) => elsewhere.filter((e) => e.label === label)),
+          ...(z.links ?? []),
+        ],
+        items: (z.latest ? feed.slice(0, z.latest) : feed.filter((it) => (z.sources ?? []).includes(it.source))).map(roomItem),
+      },
+    ]),
+  ),
+  latest: feed.slice(0, 12).map(roomItem),
+};
+
 await mkdir(`${OUT}/feed`, { recursive: true });
+await mkdir(`${OUT}/room`, { recursive: true });
 await mkdir("data", { recursive: true });
 await Promise.all([
   writeFile(`${OUT}/index.html`, home),
@@ -299,6 +326,8 @@ await Promise.all([
   writeFile(`${OUT}/feed.json`, JSON.stringify(jsonFeed, null, 2)),
   copyFile("static/style.css", `${OUT}/style.css`),
   writeFile(`${OUT}/404.html`, notFound),
+  cp("room", `${OUT}/room`, { recursive: true, filter: (src) => !src.endsWith(".md") }),
+  writeFile(`${OUT}/room/content.json`, JSON.stringify(roomContent)),
   writeFile(ARCHIVE, JSON.stringify(jsonFeed.items, null, 1) + "\n"),
 ]);
 console.log(`built ${feed.length} items → ${OUT}/`);
