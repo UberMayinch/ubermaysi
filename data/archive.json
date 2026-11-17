@@ -1,5 +1,19 @@
 [
  {
+  "id": "https://ubermayinch.github.io/blog/posts/2026-11-17-qualia/",
+  "url": "https://ubermayinch.github.io/blog/posts/2026-11-17-qualia/",
+  "title": "Qualia per second",
+  "summary": "Qualia per second The Unbearable Slowness of Being: Why do we live at 10 bits/s? : cool paper for BCI folks (named after a cool novel too). Information rate is about surprise , i.e. how much uncertainty remains about…",
+  "date_published": "2026-11-17T01:09:13.000Z",
+  "tags": [
+   "rhizoMorphic"
+  ],
+  "_source": {
+   "id": "rhizomorphic",
+   "label": "rhizoMorphic"
+  }
+ },
+ {
   "id": "https://pathlessgeodesic.substack.com/p/maintaining-relationships",
   "url": "https://pathlessgeodesic.substack.com/p/maintaining-relationships",
   "title": "maintaining relationships",
