@@ -1,5 +1,33 @@
 [
  {
+  "id": "https://pathlessgeodesic.substack.com/p/a-new-paradigm-for-technical-competence",
+  "url": "https://pathlessgeodesic.substack.com/p/a-new-paradigm-for-technical-competence",
+  "title": "A new paradigm for technical competence",
+  "summary": "297",
+  "date_published": "2026-11-18T15:59:56.000Z",
+  "tags": [
+   "Truth in the Wild."
+  ],
+  "_source": {
+   "id": "truth-in-the-wild",
+   "label": "Truth in the Wild."
+  }
+ },
+ {
+  "id": "https://pathlessgeodesic.substack.com/p/noise",
+  "url": "https://pathlessgeodesic.substack.com/p/noise",
+  "title": "noise",
+  "summary": "296",
+  "date_published": "2026-11-18T01:35:06.000Z",
+  "tags": [
+   "Truth in the Wild."
+  ],
+  "_source": {
+   "id": "truth-in-the-wild",
+   "label": "Truth in the Wild."
+  }
+ },
+ {
   "id": "https://midnighthysteria.wordpress.com/2026/11/18/noise/",
   "url": "https://midnighthysteria.wordpress.com/2026/11/18/noise/",
   "title": "noise",
@@ -11,6 +39,20 @@
   "_source": {
    "id": "midnight-hysteria",
    "label": "Midnight Hysteria"
+  }
+ },
+ {
+  "id": "https://pathlessgeodesic.substack.com/p/saturation",
+  "url": "https://pathlessgeodesic.substack.com/p/saturation",
+  "title": "saturation",
+  "summary": "295",
+  "date_published": "2026-11-17T22:37:19.000Z",
+  "tags": [
+   "Truth in the Wild."
+  ],
+  "_source": {
+   "id": "truth-in-the-wild",
+   "label": "Truth in the Wild."
   }
  },
  {
