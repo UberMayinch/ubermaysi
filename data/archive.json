@@ -1,5 +1,103 @@
 [
  {
+  "id": "https://ubermayinch.github.io/blog/posts/2026-11-22-cats-tsmith-1/",
+  "url": "https://ubermayinch.github.io/blog/posts/2026-11-22-cats-tsmith-1/",
+  "title": "Category theory 1",
+  "summary": "working through https://arxiv.org/pdf/2212.12538 new stuff: locally small categories free category on a graph use lists representing a path between two nodes obj = nodes, morphisms = lists of paths between two nodes,…",
+  "date_published": "2026-11-22T00:00:00.000Z",
+  "tags": [
+   "rhizoMorphic"
+  ],
+  "_source": {
+   "id": "rhizomorphic",
+   "label": "rhizoMorphic"
+  }
+ },
+ {
+  "id": "https://pathlessgeodesic.substack.com/p/meta",
+  "url": "https://pathlessgeodesic.substack.com/p/meta",
+  "title": "meta",
+  "summary": "303",
+  "date_published": "2026-11-21T17:10:22.000Z",
+  "tags": [
+   "Truth in the Wild."
+  ],
+  "_source": {
+   "id": "truth-in-the-wild",
+   "label": "Truth in the Wild."
+  }
+ },
+ {
+  "id": "https://pathlessgeodesic.substack.com/p/goo-climbs-over-me",
+  "url": "https://pathlessgeodesic.substack.com/p/goo-climbs-over-me",
+  "title": "goo climbs over me",
+  "summary": "302",
+  "date_published": "2026-11-21T03:49:16.000Z",
+  "tags": [
+   "Truth in the Wild."
+  ],
+  "_source": {
+   "id": "truth-in-the-wild",
+   "label": "Truth in the Wild."
+  }
+ },
+ {
+  "id": "https://pathlessgeodesic.substack.com/p/draft",
+  "url": "https://pathlessgeodesic.substack.com/p/draft",
+  "title": "draft",
+  "summary": "301",
+  "date_published": "2026-11-21T03:05:51.000Z",
+  "tags": [
+   "Truth in the Wild."
+  ],
+  "_source": {
+   "id": "truth-in-the-wild",
+   "label": "Truth in the Wild."
+  }
+ },
+ {
+  "id": "https://pathlessgeodesic.substack.com/p/practice-08f",
+  "url": "https://pathlessgeodesic.substack.com/p/practice-08f",
+  "title": "practice.",
+  "summary": "300",
+  "date_published": "2026-11-21T02:10:59.000Z",
+  "tags": [
+   "Truth in the Wild."
+  ],
+  "_source": {
+   "id": "truth-in-the-wild",
+   "label": "Truth in the Wild."
+  }
+ },
+ {
+  "id": "https://pathlessgeodesic.substack.com/p/one-idea",
+  "url": "https://pathlessgeodesic.substack.com/p/one-idea",
+  "title": "one idea",
+  "summary": "299",
+  "date_published": "2026-11-20T16:49:40.000Z",
+  "tags": [
+   "Truth in the Wild."
+  ],
+  "_source": {
+   "id": "truth-in-the-wild",
+   "label": "Truth in the Wild."
+  }
+ },
+ {
+  "id": "https://pathlessgeodesic.substack.com/p/business-and-creativity",
+  "url": "https://pathlessgeodesic.substack.com/p/business-and-creativity",
+  "title": "business and creativity",
+  "summary": "298",
+  "date_published": "2026-11-19T22:30:22.000Z",
+  "tags": [
+   "Truth in the Wild."
+  ],
+  "_source": {
+   "id": "truth-in-the-wild",
+   "label": "Truth in the Wild."
+  }
+ },
+ {
   "id": "https://pathlessgeodesic.substack.com/p/a-new-paradigm-for-technical-competence",
   "url": "https://pathlessgeodesic.substack.com/p/a-new-paradigm-for-technical-competence",
   "title": "A new paradigm for technical competence",
@@ -81,6 +179,20 @@
   "_source": {
    "id": "truth-in-the-wild",
    "label": "Truth in the Wild."
+  }
+ },
+ {
+  "id": "https://ubermayinch.github.io/blog/posts/2026-11-14-spectral/",
+  "url": "https://ubermayinch.github.io/blog/posts/2026-11-14-spectral/",
+  "title": "November 14, 2026",
+  "summary": "import numpy as np",
+  "date_published": "2026-11-14T15:11:01.000Z",
+  "tags": [
+   "rhizoMorphic"
+  ],
+  "_source": {
+   "id": "rhizomorphic",
+   "label": "rhizoMorphic"
   }
  },
  {
