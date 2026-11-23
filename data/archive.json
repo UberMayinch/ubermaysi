@@ -1,5 +1,19 @@
 [
  {
+  "id": "https://ubermayinch.github.io/blog/posts/2026-11-23-untitled-notebook/",
+  "url": "https://ubermayinch.github.io/blog/posts/2026-11-23-untitled-notebook/",
+  "title": "Category Theory 2",
+  "summary": "enriched categories hom objects don’t just have to be sets. what you do when you compose is you take an element from the product of the hom sets. given a suitable definition of a product, and of this mechanism of…",
+  "date_published": "2026-11-23T00:00:00.000Z",
+  "tags": [
+   "rhizoMorphic"
+  ],
+  "_source": {
+   "id": "rhizomorphic",
+   "label": "rhizoMorphic"
+  }
+ },
+ {
   "id": "https://ubermayinch.github.io/blog/posts/2026-11-22-cats-tsmith-1/",
   "url": "https://ubermayinch.github.io/blog/posts/2026-11-22-cats-tsmith-1/",
   "title": "Category theory 1",
