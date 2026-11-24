@@ -1,5 +1,19 @@
 [
  {
+  "id": "https://ubermayinch.github.io/blog/posts/2026-11-24-tsmithe3/",
+  "url": "https://ubermayinch.github.io/blog/posts/2026-11-24-tsmithe3/",
+  "title": "Category Theory 3",
+  "summary": "E- functor basically, you dont have to quotient out the data as in normal categories because the hom set itself has some structure thats encoded in the diagram when you impose a J object onto it. /ask Explain this…",
+  "date_published": "2026-11-24T00:00:00.000Z",
+  "tags": [
+   "rhizoMorphic"
+  ],
+  "_source": {
+   "id": "rhizomorphic",
+   "label": "rhizoMorphic"
+  }
+ },
+ {
   "id": "https://ubermayinch.github.io/blog/posts/2026-11-23-untitled-notebook/",
   "url": "https://ubermayinch.github.io/blog/posts/2026-11-23-untitled-notebook/",
   "title": "Category Theory 2",
