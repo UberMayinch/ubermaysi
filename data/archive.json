@@ -1,5 +1,19 @@
 [
  {
+  "id": "https://ubermayinch.github.io/blog/posts/2026-11-27-functorial-semantics/",
+  "url": "https://ubermayinch.github.io/blog/posts/2026-11-27-functorial-semantics/",
+  "title": "Category Theory 4: Functorial Semantics",
+  "summary": "Category Theory 4: Functorial Semantics functorial semantics : a theory is a category (syntax); a model of it is a functor out of that category (semantics). Lawvere’s 1963 thesis: an algebraic theory is a category T T T…",
+  "date_published": "2026-11-26T22:59:10.000Z",
+  "tags": [
+   "rhizoMorphic"
+  ],
+  "_source": {
+   "id": "rhizomorphic",
+   "label": "rhizoMorphic"
+  }
+ },
+ {
   "id": "https://pathlessgeodesic.substack.com/p/upaya",
   "url": "https://pathlessgeodesic.substack.com/p/upaya",
   "title": "upaya",
