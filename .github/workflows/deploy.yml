@@ -17,11 +17,10 @@ concurrency:
   cancel-in-progress: true
 
 jobs:
-  deploy:
+  # Build and deploy are separate jobs (GitHub's Pages template): deploy-pages in the same job as the upload
+  # sometimes ran before the artifact was listed ("No artifacts named github-pages were found").
+  build:
     runs-on: ubuntu-latest
-    environment:
-      name: github-pages
-      url: ${{ steps.deployment.outputs.page_url }}
     steps:
       - uses: actions/checkout@v4
       - uses: actions/setup-node@v4
@@ -35,8 +34,6 @@ jobs:
       - uses: actions/upload-pages-artifact@v3
         with:
           path: dist
-      - id: deployment
-        uses: actions/deploy-pages@v4
       # Persist the archive so old posts survive feed windows and failed fetches. Also counts as repo
       # activity, so GitHub doesn't auto-disable the schedule after 60 quiet days.
       - name: commit archive
@@ -48,3 +45,13 @@ jobs:
           git commit -m "refresh feed archive"
           git pull --rebase -X theirs origin main || true
           git push origin HEAD:main
+
+  deploy:
+    needs: build
+    runs-on: ubuntu-latest
+    environment:
+      name: github-pages
+      url: ${{ steps.deployment.outputs.page_url }}
+    steps:
+      - id: deployment
+        uses: actions/deploy-pages@v4
