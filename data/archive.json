@@ -1,5 +1,19 @@
 [
  {
+  "id": "https://pathlessgeodesic.substack.com/p/upaya",
+  "url": "https://pathlessgeodesic.substack.com/p/upaya",
+  "title": "upaya",
+  "summary": "306",
+  "date_published": "2026-11-26T17:49:06.000Z",
+  "tags": [
+   "Truth in the Wild."
+  ],
+  "_source": {
+   "id": "truth-in-the-wild",
+   "label": "Truth in the Wild."
+  }
+ },
+ {
   "id": "https://ubermayinch.github.io/blog/posts/2026-11-24-tsmithe3/",
   "url": "https://ubermayinch.github.io/blog/posts/2026-11-24-tsmithe3/",
   "title": "Category Theory 3",
@@ -25,6 +39,34 @@
   "_source": {
    "id": "rhizomorphic",
    "label": "rhizoMorphic"
+  }
+ },
+ {
+  "id": "https://pathlessgeodesic.substack.com/p/koe",
+  "url": "https://pathlessgeodesic.substack.com/p/koe",
+  "title": "koe",
+  "summary": "305",
+  "date_published": "2026-11-22T18:52:43.000Z",
+  "tags": [
+   "Truth in the Wild."
+  ],
+  "_source": {
+   "id": "truth-in-the-wild",
+   "label": "Truth in the Wild."
+  }
+ },
+ {
+  "id": "https://pathlessgeodesic.substack.com/p/idiot-proof",
+  "url": "https://pathlessgeodesic.substack.com/p/idiot-proof",
+  "title": "idiot-proof",
+  "summary": "304",
+  "date_published": "2026-11-22T03:36:26.000Z",
+  "tags": [
+   "Truth in the Wild."
+  ],
+  "_source": {
+   "id": "truth-in-the-wild",
+   "label": "Truth in the Wild."
   }
  },
  {
