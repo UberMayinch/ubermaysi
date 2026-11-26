@@ -308,6 +308,19 @@ export const LAYOUT = {
     props: { plantBay: 2, plantMaxHeight: 0.26, objectsBay: 5, objectsShelf: 2, pot: "#3b3733", leaf: "#3f5a36", box: "#d6c19c", cord: "#3a3858", iron: "#2a2826" },
   },
 
+  // ---- objects/gallery.js: the portfolio painting on the E wall -------------------------------------
+  // Hung on the free E-wall stretch between the booth's S glass (z −2.46) and the library (z −0.6), facing
+  // west (local +z → world −x; local +x → world +z, the viewer's right). pos = centre of the canvas on the
+  // wall plane. width / height = painted canvas; frame = moulding face width; depth = how far the frame
+  // stands off the wall. One vignette per portfolio item (content.json zone "portfolio").
+  gallery: {
+    pos: [3.0, 1.47, -1.55], rotY: -PI / 2, width: 1.4, height: 0.95, frame: 0.07, depth: 0.05, wall: "E",
+    canvas: 1024, frameColor: "#2b1d14", lip: "#b08a4e",
+    plaque: { size: [0.24, 0.055], gap: 0.045, color: "#b99556" },
+    // brass picture light over the frame: arm length out from the wall, bar width; glow follows ctx.time.night
+    light: { arm: 0.16, bar: 0.5, up: 0.08, intensity: 1.1, distance: 1.9, decay: 2, color: "#ffd8a8" },
+  },
+
   // ---- objects/garden.js: small Japanese garden + outdoor training yard ----------------------------
   // x ∈ [-5, 5], z ∈ [2.5, 10.5], ground y = -0.12. Fenced W, S, E and along z = 2.5 beside the house.
   // SHELL's step stone owns doorClear. Lists are world [x, z, …]; `pos` is [x, y, z] with y = ground.
@@ -434,15 +447,16 @@ export const PRESETS = [
   { id: 5, name: "library", pos: [0.8, 1.5, 0.9], target: [2.8, 1.3, 0.9] },
   { id: 6, name: "garden", pos: [1.0, 1.6, 9.5], target: [-0.75, 1.0, 2.6] },
   { id: 7, name: "elsewhere", pos: [-0.45, 1.45, 3.35], target: [0.62, 0.95, 3.78] },
+  { id: 8, name: "works", pos: [0.95, 1.6, -1.55], target: [2.95, 1.45, -1.55] }, // square on to the E-wall painting
 ];
 
 export const START_PRESET = 1;
 
 /** Content zones, in HUD order. Same ids as content.json `zones`. */
-export const ZONES = ["music", "library", "journal", "laptop", "training", "screen", "door"];
+export const ZONES = ["music", "library", "journal", "laptop", "training", "screen", "book", "portfolio", "door"];
 
 /** zone id → PRESETS index the camera tweens to when that zone's panel opens. "door" = the garden notice post. */
-export const ZONE_PRESET = { music: 3, library: 5, journal: 4, laptop: 4, training: 2, screen: 0, door: 7 };
+export const ZONE_PRESET = { music: 3, library: 5, journal: 4, laptop: 4, training: 2, screen: 0, book: 4, portfolio: 8, door: 7 };
 
 // ---- helpers ----------------------------------------------------------------------------------------
 
@@ -587,6 +601,12 @@ export function footprints() {
   }
 
   list.push(fp("library", library.pos, library.width, library.depth, library.rotY, 0, library.height));
+  if (LAYOUT.gallery) {
+    // the framed canvas (the picture light above it stays out: it is overhead and slimmer than the frame is wide)
+    const ga = LAYOUT.gallery, gIn = [Math.sin(ga.rotY), Math.cos(ga.rotY)];
+    const gc = [ga.pos[0] + (gIn[0] * ga.depth) / 2, 0, ga.pos[2] + (gIn[1] * ga.depth) / 2];
+    list.push(fp("gallery", gc, ga.width + 2 * ga.frame, ga.depth, ga.rotY, ga.pos[1] - ga.height / 2 - ga.frame - ga.plaque.gap - ga.plaque.size[1], ga.pos[1] + ga.height / 2 + ga.frame));
+  }
   list.push(fp("desk", desk.pos, desk.width, desk.depth, desk.rotY, 0, desk.topY));
 
   // Garden (outside, ground y = -0.12): solid props only; stones, mats, turf and ropes are walk-over flat.

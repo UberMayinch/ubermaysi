@@ -63,6 +63,83 @@
       "url": "https://instagram.com/chihn.moi"
     }
   ],
+  "projects": [
+    {
+      "id": "ubermayinch",
+      "title": "ubermayinch.si",
+      "url": "https://ubermayinch.si/",
+      "kind": "personal site · 3D room",
+      "blurb": "This site: one feed for poems, essays, criticism, math and videos, and the room you are standing in.",
+      "motif": "house"
+    },
+    {
+      "id": "kimaya",
+      "title": "kimaya.ink",
+      "url": "https://kimaya.ink/",
+      "kind": "birthday memory wall",
+      "blurb": "A retro camera booth for a 20th birthday: visitors shoot a photo or 8-second clip, leave a note, and it goes on the wall once approved.",
+      "motif": "camera"
+    },
+    {
+      "id": "open-to-work",
+      "title": "Open To Work",
+      "url": "https://smsurvivors.vercel.app/",
+      "kind": "browser game",
+      "blurb": "A survivors-style browser game about the CS job hunt: last 15 minutes to graduation while the weapons fire on their own.",
+      "motif": "swarm"
+    },
+    {
+      "id": "birthday-hero",
+      "title": "Birthday Hero",
+      "url": "https://autrio.gay/",
+      "kind": "rhythm game · guestbook",
+      "blurb": "A birthday rhythm game: a setlist of songs to play on the lanes, with a guestbook of memories between songs.",
+      "motif": "lanes"
+    },
+    {
+      "id": "rhizomorphic",
+      "title": "rhizoMorphic",
+      "url": "https://ubermayinch.github.io/blog/",
+      "kind": "notebook blog",
+      "blurb": "A technical blog built from Jupyter notebooks, with a graph of linked notes: maths, category theory, ML, AI safety.",
+      "motif": "rhizome"
+    }
+  ],
+  "offers": {
+    "blurb": "Ways to work with me directly. Checkout is hosted by the payment provider; you land back here when it's done.",
+    "items": [
+      {
+        "id": "call",
+        "title": "1:1 call",
+        "price": "$40",
+        "cadence": "45 min",
+        "blurb": "Talk through writing, math, music, training, or whatever you're stuck on.",
+        "includes": ["45-minute video call", "pick your slot at checkout", "short notes afterwards"],
+        "cta": "book a call",
+        "checkout": ""
+      },
+      {
+        "id": "community",
+        "title": "Community Discord",
+        "price": "$5",
+        "cadence": "monthly",
+        "blurb": "The members' Discord: drafts before they go out, threads on what I'm reading, a monthly group call.",
+        "includes": ["private channels", "early drafts and works in progress", "monthly group call"],
+        "cta": "join",
+        "checkout": ""
+      },
+      {
+        "id": "support",
+        "title": "Support the work",
+        "price": "any",
+        "cadence": "one-off",
+        "blurb": "No perks. Keeps the writing and the videos coming.",
+        "includes": ["pay what you like"],
+        "cta": "chip in",
+        "checkout": ""
+      }
+    ]
+  },
   "room": {
     "zones": [
       {
@@ -105,6 +182,21 @@
           { "label": "full feed", "url": "../feed/" },
           { "label": "rss", "url": "../feed.xml" }
         ]
+      },
+      {
+        "id": "book",
+        "title": "Book / Join",
+        "blurb": "Calls, the community Discord, and ways to support the work.",
+        "offers": true,
+        "links": [
+          { "label": "all offers", "url": "../book/" }
+        ]
+      },
+      {
+        "id": "portfolio",
+        "title": "Works",
+        "blurb": "Things I have built. Each panel of the painting is one project.",
+        "projects": true
       },
       {
         "id": "door",

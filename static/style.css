@@ -44,3 +44,20 @@ footer a { color: var(--muted); }
   .items .item { grid-template-columns: 1fr; gap: .1rem; }
   .items .src { display: block; margin: .1rem 0 0; }
 }
+.offers { display: grid; gap: 1rem; margin-top: 2.5rem; }
+.offer { border: 1px solid var(--rule); border-radius: 10px; padding: 1.1rem 1.25rem 1.25rem; scroll-margin-top: 1rem; }
+.offer:target { border-color: var(--accent); }
+.offer-head { display: flex; justify-content: space-between; align-items: baseline; gap: 1rem; flex-wrap: wrap; }
+.offer h3 { margin: 0; font-size: 1.2rem; font-weight: 500; }
+.offer .price { font-family: ui-monospace, Menlo, monospace; font-size: .95rem; white-space: nowrap; }
+.offer .price span { color: var(--muted); font-size: .78rem; }
+.offer p { margin: .4rem 0 0; color: var(--muted); }
+.offer .includes { margin: .6rem 0 0; font-size: .92rem; }
+.offer .includes li::before { content: "· "; color: var(--accent); }
+.offer .buy {
+  display: inline-block; margin-top: 1rem; font: .82rem ui-monospace, Menlo, monospace; text-decoration: none;
+  background: var(--fg); color: var(--bg); border-radius: 999px; padding: .45rem 1rem;
+}
+.offer .buy:hover { background: var(--accent); color: var(--bg); }
+.offer .buy.soon { background: var(--chip); color: var(--muted); border: 1px solid var(--rule); cursor: default; }
+.fine { margin-top: 2rem; color: var(--muted); font-size: .9rem; }

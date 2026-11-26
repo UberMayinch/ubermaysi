@@ -6,10 +6,10 @@
 //     site:   { title, author, tagline },
 //     zones:  { [zoneId]: { title, blurb, links: [{ label, url }], items: [Item] } },
 //     latest: [Item] }                                   newest 12 across everything
-//   Item = { title, url, date (ISO string), summary, source, sourceLabel }
-//   zoneIds: music, library, journal, laptop, training, screen, door
+//   Item = { title, url, date (ISO string), summary, source, sourceLabel, motif }   motif: portfolio items only
+//   zoneIds: music, library, journal, laptop, training, screen, book, portfolio, door
 
-export const ZONE_IDS = ["music", "library", "journal", "laptop", "training", "screen", "door"];
+export const ZONE_IDS = ["music", "library", "journal", "laptop", "training", "screen", "book", "portfolio", "door"];
 
 /** A well-formed content object with nothing in it (`ok: false`). */
 export function emptyContent() {
@@ -22,7 +22,7 @@ const str = (v) => (typeof v === "string" ? v : "");
 
 const cleanItem = (it) =>
   it && typeof it === "object" && str(it.title) && str(it.url)
-    ? { title: it.title, url: it.url, date: str(it.date), summary: str(it.summary), source: str(it.source), sourceLabel: str(it.sourceLabel) }
+    ? { title: it.title, url: it.url, date: str(it.date), summary: str(it.summary), source: str(it.source), sourceLabel: str(it.sourceLabel), motif: str(it.motif) }
     : null;
 
 const cleanLink = (l) => (l && typeof l === "object" && str(l.label) && str(l.url) ? { label: l.label, url: l.url } : null);

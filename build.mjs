@@ -8,6 +8,13 @@ import { existsSync } from "node:fs";
 const OUT = "dist";
 const config = JSON.parse(await readFile("sources.json", "utf8"));
 const { site, sources, elsewhere, room } = config;
+// Paid offers (calls, community, support). Each `checkout` is a hosted payment/booking URL (Stripe Payment Link,
+// PayPal button link, Cal.com paid event, ...). Empty = "coming soon". The site never sees payments or secrets:
+// deliver anything private (e.g. the Discord invite) via the provider's confirmation page or receipt.
+const offers = config.offers ?? { blurb: "", items: [] };
+// Portfolio: things built, shown as panels of the painting in the room (zone with `projects: true`).
+// motif picks the vignette room/objects/gallery.js paints for it (unknown or empty = abstract colour field).
+const projects = config.projects ?? [];
 // Where this build is served. CI sets PUBLIC_URL from GitHub Pages (e.g. https://user.github.io/repo while
 // the custom domain is not live); defaults to site.url. BASE prefixes every internal link.
 const SITE_URL = (() => {
@@ -156,7 +163,7 @@ const layout = ({ title, body, path }) => `<!doctype html>
 <link rel="stylesheet" href="${BASE}/style.css">
 </head>
 <body>
-<header class="top"><a href="${BASE}/" class="home">${esc(site.title)}</a><nav><a href="${BASE}/room/">room</a><a href="${BASE}/feed/">feed</a><a href="${BASE}/feed.xml">rss</a></nav></header>
+<header class="top"><a href="${BASE}/" class="home">${esc(site.title)}</a><nav><a href="${BASE}/room/">room</a><a href="${BASE}/feed/">feed</a><a href="${BASE}/book/">book</a><a href="${BASE}/feed.xml">rss</a></nav></header>
 <main>
 ${body}
 </main>
@@ -285,6 +292,49 @@ const jsonFeed = {
   })),
 };
 
+// ---------- book: paid offers + post-checkout landing ----------
+
+const offerCard = (o) => {
+  const href = safeUrl(o.checkout ?? "");
+  return `<li class="offer" id="${esc(o.id)}">
+  <div class="offer-head"><h3>${esc(o.title)}</h3><span class="price">${esc(o.price ?? "")}${o.cadence ? ` <span>${esc(o.cadence)}</span>` : ""}</span></div>
+  ${o.blurb ? `<p>${esc(o.blurb)}</p>` : ""}
+  ${o.includes?.length ? `<ul class="includes">${o.includes.map((x) => `<li>${esc(x)}</li>`).join("")}</ul>` : ""}
+  ${
+    href
+      ? `<a class="buy" href="${esc(href)}" rel="noopener">${esc(o.cta || "buy")} →</a>`
+      : `<span class="buy soon" aria-disabled="true">coming soon</span>`
+  }
+</li>`;
+};
+
+const bookPage = layout({
+  title: `book — ${site.title}`,
+  path: "/book/",
+  body: `<section class="intro">
+  <h1>book / join</h1>
+  <p>${esc(offers.blurb)}</p>
+</section>
+
+<ul class="offers">
+${offers.items.map(offerCard).join("\n")}
+</ul>
+
+<p class="fine">Questions first? Message me: ${elsewhere.map((e) => `<a href="${esc(e.url)}">${esc(e.label)}</a>`).join(" · ")}.</p>`,
+});
+
+// Where providers send buyers after paying (set as the success / return URL: ${SITE_URL}/thanks/).
+const thanksPage = layout({
+  title: `thanks — ${site.title}`,
+  path: "/thanks/",
+  body: `<section class="intro">
+  <h1>thank you</h1>
+  <p>Payment went through. Your confirmation email has the details: the call link for bookings, the Discord invite for the community.
+  Nothing there after a few minutes? Check spam, then message me.</p>
+  <p style="margin-top:.75rem"><a href="${BASE}/room/">back to the room →</a></p>
+</section>`,
+});
+
 const notFound = layout({
   title: `not found — ${site.title}`,
   path: "/404.html",
@@ -309,7 +359,26 @@ const roomContent = {
           ...(z.elsewhere ?? []).flatMap((label) => elsewhere.filter((e) => e.label === label)),
           ...(z.links ?? []),
         ],
-        items: (z.latest ? feed.slice(0, z.latest) : feed.filter((it) => (z.sources ?? []).includes(it.source))).map(roomItem),
+        items: z.offers
+          ? offers.items.map((o) => ({
+              title: o.title,
+              url: `../book/#${o.id}`, // via the book page, never straight to checkout
+              date: "",
+              summary: o.blurb ?? "",
+              source: "offer",
+              sourceLabel: [o.price, o.cadence].filter(Boolean).join(" · "),
+            }))
+          : z.projects
+          ? projects.map((p) => ({
+              title: p.title,
+              url: p.url,
+              date: "",
+              summary: p.blurb ?? "",
+              source: "project",
+              sourceLabel: p.kind ?? "",
+              motif: p.motif ?? "",
+            }))
+          : (z.latest ? feed.slice(0, z.latest) : feed.filter((it) => (z.sources ?? []).includes(it.source))).map(roomItem),
       },
     ]),
   ),
@@ -318,6 +387,8 @@ const roomContent = {
 
 await mkdir(`${OUT}/feed`, { recursive: true });
 await mkdir(`${OUT}/room`, { recursive: true });
+await mkdir(`${OUT}/book`, { recursive: true });
+await mkdir(`${OUT}/thanks`, { recursive: true });
 await mkdir("data", { recursive: true });
 await Promise.all([
   writeFile(`${OUT}/index.html`, home),
@@ -326,6 +397,8 @@ await Promise.all([
   writeFile(`${OUT}/feed.json`, JSON.stringify(jsonFeed, null, 2)),
   copyFile("static/style.css", `${OUT}/style.css`),
   writeFile(`${OUT}/404.html`, notFound),
+  writeFile(`${OUT}/book/index.html`, bookPage),
+  writeFile(`${OUT}/thanks/index.html`, thanksPage),
   cp("room", `${OUT}/room`, { recursive: true, filter: (src) => !src.endsWith(".md") }),
   writeFile(`${OUT}/room/content.json`, JSON.stringify(roomContent)),
   writeFile(ARCHIVE, JSON.stringify(jsonFeed.items, null, 1) + "\n"),

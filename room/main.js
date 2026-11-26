@@ -95,7 +95,7 @@ import { createRng, SEED } from "./lib/rng.js";
 import { loadContent, emptyContent } from "./lib/content.js";
 import * as audio from "./lib/audio.js";
 
-const MODULES = ["shell", "projector", "loft", "training", "bag", "drums", "booth", "desk", "library", "garden"]; // fixed build order
+const MODULES = ["shell", "projector", "loft", "training", "bag", "drums", "booth", "desk", "library", "garden", "gallery"]; // fixed build order
 const GARDEN_PRESET = PRESETS.findIndex((p) => p.name === "garden");
 const FIXED_DT = 1 / 120;
 const MAX_ACCUMULATED = 0.1;
